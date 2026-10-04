@@ -4,9 +4,9 @@
 
 This project presents the design and simulation of a **child anti-drowning safety bracelet** implemented using **VHDL on an FPGA**.
 
-The system is designed to detect dangerous situations in a swimming-pool environment and generate an alert when a potential drowning event is detected.
+The system is designed to detect potentially dangerous situations in a swimming-pool environment and generate an alert when a potential drowning event is detected.
 
-The project focuses on the implementation of a **digital safety system using hardware description language (VHDL)**, including registers, control logic, alert management, and simulation using FPGA development tools.
+The project focuses on the implementation of a **digital safety system using VHDL (Very High-Speed Integrated Circuit Hardware Description Language)**, including registers, control logic, alert management, and simulation using FPGA development tools.
 
 ---
 
@@ -28,7 +28,7 @@ The main objectives of this project are:
 
 The system is organized into several digital modules responsible for detecting and managing safety events.
 
-### Main components
+### Main Components
 
 ```text
                   ┌─────────────────────┐
@@ -57,14 +57,14 @@ The system is organized into several digital modules responsible for detecting a
                   ┌─────────────────────┐
                   │   Control Logic     │
                   │                     │
-                  │ Alert Management    │
+                  │  Alert Management   │
                   └──────────┬──────────┘
                              │
                              ▼
                   ┌─────────────────────┐
-                  │   Alert Output      │
+                  │    Alert Output     │
                   │                     │
-                  │ LED / Buzzer / etc. │
+                  │   LED / Buzzer      │
                   └─────────────────────┘
 ```
 
@@ -76,9 +76,9 @@ The system is organized into several digital modules responsible for detecting a
 |---|---|
 | **VHDL** | Hardware description and digital logic design |
 | **FPGA** | Target hardware platform |
-| **Intel Quartus Prime** | Compilation and synthesis |
+| **Intel Quartus Prime 20.1** | Compilation and synthesis |
 | **ModelSim / QuestaSim** | Functional simulation |
-| **RTL Viewer** | Visualization of synthesized architecture |
+| **RTL Viewer** | Visualization of the synthesized architecture |
 | **Testbench** | Verification of module behavior |
 
 ---
@@ -90,7 +90,7 @@ VHDL/
 │
 ├── src/
 │   ├── register_alerts.vhd
-│   ├── ...
+│   └── ...
 │
 ├── simulation/
 │   ├── testbench.vhd
@@ -103,7 +103,7 @@ VHDL/
 └── ...
 ```
 
-> The exact file structure can be adapted according to the final Quartus project organization.
+> The exact file structure may vary depending on the final Quartus project organization.
 
 ---
 
@@ -111,27 +111,27 @@ VHDL/
 
 ### `register_alerts.vhd`
 
-The alert register is responsible for storing the state of detected alerts.
+The `register_alerts.vhd` module is responsible for storing and managing the state of detected alerts.
 
 It allows the system to retain an alert condition according to the control signals and clock behavior.
 
 Typical operations include:
 
 - Resetting the alert register.
-- Setting an alert.
+- Activating an alert.
 - Maintaining the alert state.
 - Clearing the alert when the appropriate condition occurs.
 
 Conceptually:
 
 ```text
-             ┌───────────────┐
-   Alert ───►│               │
-             │ Alert Register│───► Alert State
-   Reset ───►│               │
-             │               │
-   Clock ───►│               │
-             └───────────────┘
+             ┌─────────────────┐
+   Alert ───►│                 │
+             │  Alert Register │───► Alert State
+   Reset ───►│                 │
+             │                 │
+   Clock ───►│                 │
+             └─────────────────┘
 ```
 
 ---
@@ -140,9 +140,9 @@ Conceptually:
 
 The digital system operates synchronously using a clock signal.
 
-The reset signal initializes the system to a known safe state.
+The reset signal initializes the system to a known and safe state.
 
-Typical behavior:
+### Reset Behavior
 
 ```text
 RESET = 1
@@ -152,10 +152,10 @@ Alert Register = 0
 System = SAFE
 ```
 
-After reset:
+### Alert Behavior
 
 ```text
-Danger detected
+Danger Detected
        │
        ▼
 Alert Register = 1
@@ -172,7 +172,7 @@ Before deploying the design to an FPGA, the VHDL modules are verified using a **
 
 The testbench generates different input scenarios and verifies that the outputs correspond to the expected behavior.
 
-### Example test scenarios
+### Example Test Scenarios
 
 | Test | Condition | Expected Result |
 |---|---|---|
@@ -180,28 +180,26 @@ The testbench generates different input scenarios and verifies that the outputs 
 | 2 | Normal swimming | No alert |
 | 3 | Dangerous condition detected | Alert activated |
 | 4 | Alert remains active | Alert state maintained |
-| 5 | Alert cleared | System returns to safe state |
-| 6 | Reset during alert | Alert cleared |
+| 5 | Alert cleared | System returns to the safe state |
+| 6 | Reset during an active alert | Alert cleared |
 
 ---
 
 ## 📊 RTL Design
 
-The project can be inspected using the **RTL Viewer** provided by Quartus Prime.
+The project can be inspected using the **RTL Viewer** provided by Intel Quartus Prime.
 
 The RTL representation makes it possible to verify the generated hardware structure and ensure that the VHDL description corresponds to the intended digital architecture.
 
-The design contains sequential and combinational logic used to manage the safety states and alerts.
+The design contains sequential and combinational logic used to manage safety states and alerts.
 
 ---
 
 ## ⚙️ Compilation
 
-The project can be compiled using:
+The project can be compiled using **Intel Quartus Prime 20.1**.
 
-**Intel Quartus Prime 20.1**
-
-Basic compilation workflow:
+### Basic Compilation Workflow
 
 ```text
 VHDL Source
@@ -223,23 +221,29 @@ FPGA Configuration
 
 ## 🚀 How to Run the Project
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
 ```
 
-### 2. Open the project
+Then navigate to the project directory:
 
-Open the Quartus project:
+```bash
+cd YOUR_REPOSITORY
+```
+
+### 2. Open the Quartus Project
+
+Open **Intel Quartus Prime** and select:
 
 ```text
 File → Open Project
 ```
 
-Select the project's `.qpf` file.
+Then select the project's `.qpf` file.
 
-### 3. Compile
+### 3. Compile the Project
 
 Run:
 
@@ -247,13 +251,13 @@ Run:
 Processing → Start Compilation
 ```
 
-### 4. Run the simulation
+Quartus will perform analysis, synthesis, fitting, and compilation of the VHDL design.
 
-Open the simulation environment and compile the VHDL sources and testbench.
+### 4. Run the Simulation
 
-Then execute the simulation and observe the relevant signals.
+Open the simulation environment and compile the VHDL source files and testbench.
 
-Example:
+Then execute the simulation and observe the relevant signals:
 
 ```text
 Clock
@@ -294,17 +298,17 @@ Synthesis
 FPGA Implementation
 ```
 
-This methodology allows errors in the digital logic to be detected during simulation before deployment to physical hardware.
+This methodology makes it possible to identify and correct errors in the digital logic during simulation before deploying the design to physical FPGA hardware.
 
 ---
 
 ## 🛡️ Safety Concept
 
-The bracelet is intended as a **safety-assistance system** rather than a replacement for adult supervision or certified aquatic safety equipment.
+The bracelet is intended as a **safety-assistance system** and is not a replacement for adult supervision or certified aquatic safety equipment.
 
-The digital architecture can be extended with additional sensors and communication mechanisms to improve the detection and notification capabilities.
+The digital architecture can be extended with additional sensors and communication mechanisms to improve its detection and notification capabilities.
 
-Possible future extensions include:
+### Possible Future Extensions
 
 - 📡 Wireless communication with a smartphone.
 - 📍 GPS-based location tracking.
@@ -320,28 +324,28 @@ Possible future extensions include:
 
 ## 🔮 Future Improvements
 
-Future versions could introduce a more advanced state machine:
+Future versions could introduce a more advanced **finite-state machine (FSM)** to manage the different safety states:
 
 ```text
           ┌───────────┐
           │   SAFE    │
           └─────┬─────┘
                 │
-          Dangerous Event
+        Dangerous Event
                 │
                 ▼
           ┌───────────┐
           │  WARNING  │
           └─────┬─────┘
                 │
-        Critical Condition
+       Critical Condition
                 │
                 ▼
           ┌───────────┐
-          │  ALERT    │
+          │   ALERT   │
           └─────┬─────┘
                 │
-          Recovery / Reset
+         Recovery / Reset
                 │
                 ▼
           ┌───────────┐
@@ -369,17 +373,20 @@ This project was developed as part of an **FPGA / VHDL digital systems project**
 
 ---
 
-## 👨‍💻 Author
+## 👥 Authors
 
-**Moatez Borgi**
-**Emna Riahi**
-**Nessim Mezhoud**
-**Rayen Askri**
-**Ismail Bouchnak**
-**Ezzdine Chemak**
-Software Engineering / Embedded Systems Engineering Student
+This project was developed by:
 
-Tunisia 🇹🇳
+- **Moatez Borgi**
+- **Emna Riahi**
+- **Nessim Mezhoud**
+- **Rayen Askri**
+- **Ismail Bouchnak**
+- **Ezzdine Chemak**
+
+**Software Engineering / Embedded Systems Engineering Students**
+
+🇹🇳 **Tunisia**
 
 ---
 
