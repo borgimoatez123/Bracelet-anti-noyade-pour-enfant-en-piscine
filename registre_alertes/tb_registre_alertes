@@ -1,0 +1,157 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity tb_registre_alertes is
+end tb_registre_alertes;
+
+architecture Behavioral of tb_registre_alertes is
+
+    -- Signaux du DUT
+    signal clk    : STD_LOGIC := '0';
+    signal rst    : STD_LOGIC := '0';
+    signal alarme : STD_LOGIC := '0';
+    signal nb     : STD_LOGIC_VECTOR(3 downto 0);
+
+    constant CLK_PERIOD : time := 10 ns;
+
+begin
+
+    -- Génération de l'horloge
+    clk <= not clk after CLK_PERIOD / 2;
+
+    -- Instance du registre_alertes
+    DUT : entity work.registre_alertes
+        port map (
+            clk    => clk,
+            rst    => rst,
+            alarme => alarme,
+            nb     => nb
+        );
+
+    -- Stimuli
+    process
+    begin
+
+        ----------------------------------------------------------------
+        -- TEST 1 : RESET
+        ----------------------------------------------------------------
+        rst <= '1';
+        alarme <= '0';
+
+        wait for 20 ns;
+
+        rst <= '0';
+
+        wait for 10 ns;
+
+        assert nb = "0000"
+            report "ERREUR TEST 1 : nb doit être 0 après reset"
+            severity error;
+
+        report "TEST 1 OK : Reset -> nb = 0";
+
+
+        ----------------------------------------------------------------
+        -- TEST 2 : ALARME LONGUE
+        -- alarme reste à 1 pendant plusieurs cycles
+        -- => doit compter UNE seule alerte
+        ----------------------------------------------------------------
+        alarme <= '1';
+
+        wait for 40 ns;
+
+        assert nb = "0001"
+            report "ERREUR TEST 2 : une alarme longue doit compter 1 seule fois"
+            severity error;
+
+        report "TEST 2 OK : alarme longue -> nb = 1";
+
+
+        ----------------------------------------------------------------
+        -- Retour à 0
+        ----------------------------------------------------------------
+        alarme <= '0';
+
+        wait for 20 ns;
+
+
+        ----------------------------------------------------------------
+        -- TEST 3 : DEUXIEME ALERTE
+        ----------------------------------------------------------------
+        alarme <= '1';
+
+        wait for 10 ns;
+
+        assert nb = "0010"
+            report "ERREUR TEST 3 : deux fronts doivent donner nb = 2"
+            severity error;
+
+        report "TEST 3 OK : deuxième alerte -> nb = 2";
+
+
+        ----------------------------------------------------------------
+        -- Retour à 0
+        ----------------------------------------------------------------
+        alarme <= '0';
+
+        wait for 20 ns;
+
+
+        ----------------------------------------------------------------
+        -- TEST 4 : SATURATION A 15
+        --
+        -- On possède déjà 2 alertes.
+        -- Il faut générer 13 fronts supplémentaires.
+        ----------------------------------------------------------------
+        for i in 1 to 13 loop
+
+            -- Front montant
+            alarme <= '1';
+            wait for 10 ns;
+
+            -- Retour à 0
+            alarme <= '0';
+            wait for 10 ns;
+
+        end loop;
+
+
+        assert nb = "1111"
+            report "ERREUR TEST 4 : nb doit être à 15"
+            severity error;
+
+        report "TEST 4 OK : compteur atteint 15";
+
+
+        ----------------------------------------------------------------
+        -- TEST 5 : DEPASSEMENT
+        -- Même avec un nouveau front, nb doit rester à 15
+        ----------------------------------------------------------------
+        alarme <= '1';
+
+        wait for 10 ns;
+
+        alarme <= '0';
+
+        wait for 10 ns;
+
+        assert nb = "1111"
+            report "ERREUR TEST 5 : le compteur doit rester bloque a 15"
+            severity error;
+
+        report "TEST 5 OK : saturation a 15";
+
+
+        ----------------------------------------------------------------
+        -- FIN
+        ----------------------------------------------------------------
+        report "========================================";
+        report "TOUS LES TESTS SONT PASSES";
+        report "========================================";
+
+        wait;
+
+    end process;
+
+end Behavioral;
