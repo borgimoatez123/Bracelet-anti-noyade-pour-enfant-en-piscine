@@ -372,7 +372,11 @@ This project was developed as part of an **FPGA / VHDL digital systems project**
 ## 👨‍💻 Author
 
 **Moatez Borgi**
-
+**Emna Riahi**
+**Nessim Mezhoud**
+**Rayen Askri**
+**Ismail Bouchnak**
+**Ezzdine Chemak**
 Software Engineering / Embedded Systems Engineering Student
 
 Tunisia 🇹🇳
